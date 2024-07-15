@@ -9,7 +9,7 @@ export default[
         form:[
             {
                 label:"Enter the content of the blog",
-                field:"input",
+                field:"textarea",
                 name:"content",
                 required:true,
             },
