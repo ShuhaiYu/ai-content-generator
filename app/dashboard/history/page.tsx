@@ -17,7 +17,7 @@ import Image from "next/image";
 import { useUser } from "@clerk/clerk-react";
 import { sql } from "drizzle-orm";
 
-interface AIoutputData {
+export interface AIoutputData {
   id: number;
   formData: string;
   aiResponse: string;
@@ -27,13 +27,13 @@ interface AIoutputData {
 }
 
 const History = () => {
-  const [historyData, setHistoryData] = useState<any[]>([]);
+  const [historyData, setHistoryData] = useState<AIoutputData[]>([]);
   const { user } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
         if (!user?.primaryEmailAddress?.emailAddress) {
-            console.error("User not authenticated");
+            // console.error("User not authenticated");
             return;
           }
       try {
@@ -41,7 +41,7 @@ const History = () => {
           .select()
           .from(AIoutput)
           .where(sql`${AIoutput.createdBy} = ${user.primaryEmailAddress.emailAddress}`);
-
+        // @ts-ignore
         setHistoryData(data);
       } catch (error) {
         console.error("Error fetching history data:", error);
@@ -100,7 +100,7 @@ const History = () => {
                   </TableCell>
 
                   <TableCell>{item.createdAt}</TableCell>
-                  <TableCell>{item.aiResponse.split(" ").length}</TableCell>
+                  <TableCell>{item.aiResponse?.length}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

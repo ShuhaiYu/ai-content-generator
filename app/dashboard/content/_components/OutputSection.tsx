@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 
 interface Props {
-  output: string | null;
+  output: any;
 }
 
 function OutputSection({output}:Props) {
@@ -21,7 +21,8 @@ function OutputSection({output}:Props) {
     <div className="bg-white shadow-lg border rounded-md">
       <div className="flex justify-between items-center p-5">
         <h2 className="text-2xl font-semibold p-5">Output</h2>
-        <Button className="gap-2">
+        <Button className="gap-2"
+        onClick={()=> navigator.clipboard.writeText(output)}>
           <Copy className="w-4 h-4"/>
           Copy
         </Button>

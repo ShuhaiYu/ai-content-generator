@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import FormSection from "../_components/FormSection";
 import OutputSection from "../_components/OutputSection";
 import Templates from "@/app/(data)/Templates";
@@ -13,6 +13,9 @@ import { db } from "@/utils/db";
 import { AIoutput } from "@/utils/schema";
 import { useUser } from "@clerk/clerk-react";
 import moment from "moment";
+import { TotalUsageContext } from "@/app/(context)/TotalUsageContext";
+import { useRouter } from "next/navigation";
+import { UserSubscription as US } from "@/app/(context)/UserSubscription";
 
 interface Props {
   params: {
@@ -28,8 +31,17 @@ function CreateNewContent(Props: Props) {
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState<string>("");
   const { user } = useUser();
+  const router = useRouter();
+  const {totalUsage, setTotalUsage} = useContext(TotalUsageContext);
+  const {userSubscription, setUserSubscription} = useContext(US);
+
 
   const GenerateAIContent = async (form: any) => {
+    if (totalUsage >= 10000 && !userSubscription) {
+      alert("You have reached the limit of 10,000 credits. Please upgrade your plan to continue using the app.");
+      router.push("/dashboard/billing");
+      return;
+    }
     setLoading(true);
     console.log("Is Loading", loading);
     const prompt = selectedTemplate?.aiPrompt;
